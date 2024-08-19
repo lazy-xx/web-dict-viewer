@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+        <title>Process viewing</title>
+
+        <script src="incppect.js"></script>
+        <script src="imgui-ws.js"></script>
+        <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      html, body {
+        height: 100%;
+        width: 100%;
+      }
+      canvas {
+        display: block;
+      }
+      #canvas_main {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+    }
+        </style>
+    </head>
+
+    <body>
+        <script>
+            function init() {
+                //var output = document.getElementById('client-info');
+
+                incppect.render = function() {
+                    imgui_ws.gl.clearColor(0.45, 0.55, 0.60, 1.00);
+                    imgui_ws.gl.clear(imgui_ws.gl.COLOR_BUFFER_BIT);
+
+                    imgui_ws.incppect_textures(this);
+                    imgui_ws.incppect_draw_lists(this);
+                    imgui_ws.render();
+
+                    //var my_id = this.get_int32('my_id[%d]', -1) || 0;
+                    //output.innerHTML = 'Your client Id: ' + my_id;
+                }
+
+                incppect.onerror = function(evt) {
+                    if (typeof evt === 'object') {
+                        //output.innerHTML = 'Error: check console for more information';
+                        console.error(evt);
+                    } else {
+                        //output.innerHTML = evt;
+                    }
+                }
+                //delay
+                incppect.k_requests_update_freq_ms = 0
+                incppect.init();
+
+                imgui_ws.set_incppect_handlers(incppect);
+                imgui_ws.init('canvas_main');
+            }
+            window.addEventListener('load', init);
+
+        </script>
+            <!-- tabindex="0" 不能去，用来监听事件的；将canvas的初始大小调大了-->
+          <canvas id="canvas_main" width="2000" height="1600" style="background-color: black;" tabindex="0">Your browser does not support the HTML5 canvas tag.</canvas>
+          <script>
+            //设置canvas的大小。但这个动态调整canvas大小有bug，代码中并没有用到该函数。
+            function setCanvas(){
+              var mainCanvas = document.getElementById("canvas_main");
+              var size = getWindowSize();
+              mainCanvas.width = size.width;
+              mainCanvas.height = size.height;
+              console.log("x:" + mainCanvas.getBoundingClientRect().left)
+              console.log("y:" + mainCanvas.getBoundingClientRect().top)
+            }
+            // 获取窗口大小
+            function getWindowSize() {
+                return {
+                    width: window.innerWidth,
+                    height: window.innerHeight
+                };
+            }
+    
+            // 建立 WebSocket 连接
+            //var ws = new WebSocket('ws://192.168.56.101:8000');
+            var ws = new WebSocket('ws://localhost:8000');
+            ws.onopen = function() {
+                //setCanvas()
+                // 发送大小信息到 Python 后端
+                ws.send(JSON.stringify(getWindowSize()));
+            };
+            // 监听窗口大小变化事件
+            window.addEventListener("resize", function() {
+                console.log("resize")
+                //setCanvas()
+                // 发送大小信息到 Python 后端
+                ws.send(JSON.stringify(getWindowSize()));
+            });
+        </script>
+    </body>
+</html>
+

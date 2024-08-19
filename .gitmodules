@@ -1,0 +1,10 @@
+[submodule "imgui"]
+	path = third-party/imgui/imgui
+	url = https://github.com/ocornut/imgui
+[submodule "incppect"]
+	path = third-party/incppect
+	url = https://github.com/ggerganov/incppect
+[submodule "extern/pybind11"]
+	path = extern/pybind11
+	url = ../../pybind/pybind11
+	branch = stable
