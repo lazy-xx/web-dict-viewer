@@ -4,6 +4,7 @@
 import asyncio
 import json
 import multiprocessing
+import sys
 import time
 import traceback
 import imgui
@@ -51,6 +52,7 @@ dataini = {
 
 use_test_sample = False
 def main(window_width, window_height):
+    #time.sleep(20)
     global dataini
     global use_test_sample
 
@@ -67,7 +69,7 @@ def main(window_width, window_height):
     io.display_size = 1920, 1080
 
     #imgui-ws的初始化，参数为端口号、html文件所在文件夹、imgui上下文指针
-    a = pw.PyDraw(5000, "/home/lazybox/imgui-ws/examples/Final", imgui.get_current_context().ptr)
+    a = pw.PyDraw(5000, "examples/Final", imgui.get_current_context().ptr)
     width, height, pixels = io.fonts.get_tex_data_as_alpha8()
     a.PrepareFontTexture(width, height, pixels)
 
@@ -97,6 +99,7 @@ def main(window_width, window_height):
             imgui.set_next_window_size(window_width.value, window_height.value)
             imgui.set_next_window_position(0,0)
             displayDict.show_window()
+            #show_test_window()
 
             end_time = time.time()
             timer += end_time - start_time
@@ -140,7 +143,7 @@ def start_servers(window_width, window_height):
 
 
 if __name__ == "__main__":
-    #多线程共享数据
+    # #多线程共享数据
     window_width = multiprocessing.Value('i', 1200)
     window_height = multiprocessing.Value('i', 800)
     
@@ -150,3 +153,5 @@ if __name__ == "__main__":
     
     p1.start()
     p2.start()
+    print(p1.pid)
+    print(p2.pid)
